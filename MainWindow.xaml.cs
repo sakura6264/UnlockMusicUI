@@ -24,7 +24,7 @@ namespace UnlockMusicUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string AllSuportExt = "*.666c6163;*.6d3461;*.6d7033;*.6f6767;*.bkcape;*.bkcflac;*.bkcm4a;*.bkcmp3;*.bkcogg;*.bkcwav;*.bkcwma;*.flac;*.kgm;*.kgma;*.kwm;*.m4a;*.mflac;*.mflac0;*.mgg;*.mgg1;*.mggl;*.mp3;*.ncm;*.ogg;*.qmc0;*.qmc2;*.qmc3;*.qmc4;*.qmc6;*.qmc8;*.qmcflac;*.qmcogg;*.tkm;*.tm0;*.tm2;*.tm3;*.tm6;*.vpr;*.wav;*.wma;*.xm";
+        const string AllSuportExt = "*.666c6163;*.6d3461;*.6d7033;*.6f6767;*.776176;*.aac;*.bkcape;*.bkcflac;*.bkcm4a;*.bkcmp3;*.bkcogg;*.bkcwav;*.bkcwma;*.flac;*.kgm;*.kgma;*.kwm;*.m4a;*.mflac;*.mflac0;*.mflach;*.mgg;*.mgg1;*.mggl;*.mmp4;*.mp3;*.ncm;*.ogg;*.qmc0;*.qmc2;*.qmc3;*.qmc4;*.qmc6;*.qmc8;*.qmcflac;*.qmcogg;*.tkm;*.tm0;*.tm2;*.tm3;*.tm6;*.vpr;*.wav;*.wma;*.x2m;*.x3m;*.xm";
         List<ItemInList> TODOList = new List<ItemInList>();
         public MainWindow()
         {

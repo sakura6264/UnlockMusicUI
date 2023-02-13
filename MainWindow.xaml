@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UnlockMusicUI"
         mc:Ignorable="d"
         ResizeMode="CanMinimize" Icon="{StaticResource Ico}"
-        Title="MainWindow" Height="600" Width="900">
+        Title="UnlockMusicUI" Height="600" Width="900">
     <Grid>
         <DockPanel Margin="10">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" VerticalAlignment="Top">
