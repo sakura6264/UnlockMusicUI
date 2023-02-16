@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using Microsoft.Win32;
 using Vanara.PInvoke;
+using static Vanara.PInvoke.Gdi32;
 
 namespace UnlockMusicUI
 {
@@ -165,12 +166,41 @@ namespace UnlockMusicUI
 
         private void TODOs_Drop(object sender, DragEventArgs e)
         {
+            List<string> files = new List<string>();
+            void FindFile(DirectoryInfo di)
+            {
+                FileInfo[] fis = di.GetFiles();
+                foreach (var i in fis)
+                {
+                    files.Add(i.FullName);
+                }
+                DirectoryInfo[] dis = di.GetDirectories();
+                foreach (var i in dis)
+                {
+                    if (!(i.Name.Equals(".") || i.Name.Equals("..")))
+                    {
+                        FindFile(i);
+                    }
+                }
+            }
             foreach (var i in e.Data.GetData(DataFormats.FileDrop) as Array)
             {
-                string[] lst = this.TODOList.Cast<ItemInList>().Select(n => n.GetText()).ToArray();
-                if (!lst.Contains(i as string))
+                var fi = new FileInfo(i as string);
+                if ((fi.Attributes & FileAttributes.Directory) != 0)
                 {
-                    TODOList.Add(new ItemInList(i as string));
+                    FindFile(new DirectoryInfo(i as string));
+                    var lsts = this.TODOList.Cast<ItemInList>().Select(n => n.GetText());
+                    var addlst = files.Where(n => !lsts.Contains(n)).Select(n => new ItemInList(n)).ToList();
+                    this.TODOList.AddRange(addlst);
+                    files.Clear();
+                }
+                else
+                {
+                    string[] lst = this.TODOList.Cast<ItemInList>().Select(n => n.GetText()).ToArray();
+                    if (!lst.Contains(i as string))
+                    {
+                        TODOList.Add(new ItemInList(i as string));
+                    }
                 }
             }
             this.TODOs.ItemsSource = TODOList;
