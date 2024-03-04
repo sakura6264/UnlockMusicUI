@@ -8,7 +8,7 @@ import (
 	"runtime"
 
 	"github.com/samber/lo"
-	//"go.uber.org/zap"
+	"go.uber.org/zap"
 	"golang.org/x/exp/slices"
 	"golang.org/x/text/unicode/norm"
 	"unlock-music.dev/mmkv"
@@ -17,7 +17,7 @@ import (
 var streamKeyVault mmkv.Vault
 
 // TODO: move to factory
-func readKeyFromMMKV(file string) ([]byte, error) {
+func readKeyFromMMKV(file string, logger *zap.Logger) ([]byte, error) {
 	if file == "" {
 		return nil, errors.New("file path is required while reading key from mmkv")
 	}
@@ -46,7 +46,7 @@ func readKeyFromMMKV(file string) ([]byte, error) {
 			return nil, fmt.Errorf("open mmkv vault: %w", err)
 		}
 
-		//logger.Debug("mmkv vault opened", zap.Strings("keys", streamKeyVault.Keys()))
+		logger.Debug("mmkv vault opened", zap.Strings("keys", streamKeyVault.Keys()))
 	}
 
 	_, partName := filepath.Split(file)
@@ -67,7 +67,7 @@ func readKeyFromMMKV(file string) ([]byte, error) {
 			idx := slices.Index(fileNames, key)
 			buf, err = streamKeyVault.GetBytes(filePaths[idx])
 			if err != nil {
-				//logger.Warn("read key from mmkv", zap.String("key", filePaths[idx]), zap.Error(err))
+				logger.Warn("read key from mmkv", zap.String("key", filePaths[idx]), zap.Error(err))
 			}
 		}
 

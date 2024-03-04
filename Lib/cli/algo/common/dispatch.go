@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	//"go.uber.org/zap"
+	"go.uber.org/zap"
 )
 
 type DecoderParams struct {
@@ -14,7 +14,7 @@ type DecoderParams struct {
 
 	FilePath string // optional, source file path
 
-	//Logger *zap.Logger // required
+	Logger *zap.Logger // required
 }
 type NewDecoderFunc func(p *DecoderParams) Decoder
 

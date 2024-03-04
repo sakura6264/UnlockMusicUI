@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	//"go.uber.org/zap"
+	"go.uber.org/zap"
 
 	"unlock-music.dev/cli/algo/common"
 	"unlock-music.dev/cli/internal/sniff"
@@ -40,7 +40,7 @@ type Decoder struct {
 	probeBuf      *bytes.Buffer // probeBuf is the buffer for sniffing metadata, TODO: consider pipe?
 
 	// provider
-	//logger *zap.Logger
+	logger *zap.Logger
 }
 
 // Read implements io.Reader, offer the decrypted audio data.
@@ -57,7 +57,7 @@ func (d *Decoder) Read(p []byte) (int, error) {
 }
 
 func NewDecoder(p *common.DecoderParams) common.Decoder {
-	return &Decoder{raw: p.Reader, params: p}
+	return &Decoder{raw: p.Reader, params: p, logger: p.Logger}
 }
 
 func (d *Decoder) Validate() error {
@@ -127,11 +127,12 @@ func (d *Decoder) searchKey() (err error) {
 
 	//goland:noinspection GoBoolExpressions
 	if runtime.GOOS == "darwin" && !strings.HasPrefix(d.params.Extension, ".qmc") {
-		d.decodedKey, err = readKeyFromMMKV(d.params.FilePath)
+		d.decodedKey, err = readKeyFromMMKV(d.params.FilePath, d.logger)
 		if err == nil {
 			d.audioLen = fileSize
 			return
 		}
+		d.logger.Warn("read key from mmkv failed", zap.Error(err))
 	}
 
 	suffixBuf := make([]byte, 4)

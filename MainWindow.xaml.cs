@@ -15,8 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using Microsoft.Win32;
-using Vanara.PInvoke;
-using static Vanara.PInvoke.Gdi32;
+
+
 
 namespace UnlockMusicUI
 {
@@ -83,29 +83,30 @@ namespace UnlockMusicUI
                     }
                 }
             }
-            var strbuf = new Vanara.InteropServices.SafeCoTaskMemString(512);
-            Shell32.BROWSEINFO info = new Shell32.BROWSEINFO(HWND.NULL, IntPtr.Zero, "Select Folder",
-                Shell32.BrowseInfoFlag.BIF_RETURNONLYFSDIRS | Shell32.BrowseInfoFlag.BIF_USENEWUI | Shell32.BrowseInfoFlag.BIF_DONTGOBELOWDOMAIN | Shell32.BrowseInfoFlag.BIF_NONEWFOLDERBUTTON,
-                null, strbuf);
-            var res = Shell32.SHBrowseForFolder(info);
-            StringBuilder builder = new StringBuilder(512);
-            if (!(res.IsNull || res.IsClosed || res.IsInvalid || res.IsEmpty))
+
+            var dialog = new Microsoft.Win32.OpenFolderDialog();
+            dialog.Multiselect = true;
+            dialog.Title = "Select Folder";
+            bool? result = dialog.ShowDialog();
+            if (result == true)
             {
-                Shell32.SHGetPathFromIDList(res, builder);
-                DirectoryInfo dir = new DirectoryInfo(builder.ToString());
-                if (dir.Exists)
+                foreach (var i in dialog.FolderNames)
                 {
-                    FindFile(dir);
-                    var lsts = this.TODOList.Cast<ItemInList>().Select(n => n.GetText());
-                    var addlst = files.Where(n => !lsts.Contains(n)).Select(n => new ItemInList(n)).ToList();
-                    this.TODOList.AddRange(addlst);
-                    this.TODOs.ItemsSource = this.TODOList;
-                    this.TODOs.Items.Refresh();
-                }
-                else
-                {
-                    _ = MessageBox.Show("File\"" + dir.FullName + "\" has already been included in the file list.", "Warning",
-                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                    var dir = new DirectoryInfo(i);
+                    if (dir.Exists)
+                    {
+                        FindFile(dir);
+                        var lsts = this.TODOList.Cast<ItemInList>().Select(n => n.GetText());
+                        var addlst = files.Where(n => !lsts.Contains(n)).Select(n => new ItemInList(n)).ToList();
+                        this.TODOList.AddRange(addlst);
+                        this.TODOs.ItemsSource = this.TODOList;
+                        this.TODOs.Items.Refresh();
+                    }
+                    else
+                    {
+                        _ = MessageBox.Show("\"" + dir.FullName + "\" is not a valid folder.", "Warning",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
             }
         }
@@ -129,16 +130,13 @@ namespace UnlockMusicUI
                            MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            var strbuf = new Vanara.InteropServices.SafeCoTaskMemString(512);
-            Shell32.BROWSEINFO info = new Shell32.BROWSEINFO(HWND.NULL, IntPtr.Zero, "Select Folder to Save",
-                Shell32.BrowseInfoFlag.BIF_RETURNONLYFSDIRS | Shell32.BrowseInfoFlag.BIF_USENEWUI | Shell32.BrowseInfoFlag.BIF_DONTGOBELOWDOMAIN,
-                null, strbuf);
-            var res = Shell32.SHBrowseForFolder(info);
-            StringBuilder builder = new StringBuilder(512);
-            if (!(res.IsNull || res.IsClosed || res.IsInvalid))
+            var dialog = new Microsoft.Win32.OpenFolderDialog();
+            dialog.Multiselect = false;
+            dialog.Title = "Select Output Folder";
+            bool? result = dialog.ShowDialog();
+            if (result == true)
             {
-                Shell32.SHGetPathFromIDList(res, builder);
-                DirectoryInfo dir = new DirectoryInfo(builder.ToString());
+                var dir = new DirectoryInfo(dialog.FolderName);
                 if (dir.Exists)
                 {
                     BackgroundWorker worker = new BackgroundWorker
@@ -152,9 +150,10 @@ namespace UnlockMusicUI
                 }
                 else
                 {
-                    _ = MessageBox.Show("File\"" + dir.FullName + "\" has already been included in the file list.", "Warning",
+                    _ = MessageBox.Show("\"" + dir.FullName + "\" is not a valid folder.", "Warning",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
+
             }
         }
         private void Sort_Click(object sender, RoutedEventArgs e)

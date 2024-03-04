@@ -18,14 +18,11 @@ type ncmMeta interface {
 
 type ncmMetaMusic struct {
 	Format        string          `json:"format"`
-	MusicID       int             `json:"musicId"`
 	MusicName     string          `json:"musicName"`
 	Artist        [][]interface{} `json:"artist"`
 	Album         string          `json:"album"`
-	AlbumID       int             `json:"albumId"`
 	AlbumPicDocID interface{}     `json:"albumPicDocId"`
 	AlbumPic      string          `json:"albumPic"`
-	MvID          int             `json:"mvId"`
 	Flag          int             `json:"flag"`
 	Bitrate       int             `json:"bitrate"`
 	Duration      int             `json:"duration"`

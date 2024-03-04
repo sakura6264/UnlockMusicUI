@@ -8,6 +8,6 @@
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
         <Image x:Name="Img" Width ="20" Height="20" Margin="0,0,10,0"/>
         <Button x:Name="ShowError" Click="ShowError_Click" Margin="0,0,10,0">Show Error</Button>
-        <TextBlock x:Name="Text"/>
+        <TextBlock x:Name="Text" HorizontalAlignment="Left" VerticalAlignment="Center"/>
     </StackPanel>
 </UserControl>
