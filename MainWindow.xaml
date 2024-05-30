@@ -19,7 +19,7 @@
                 <Button x:Name="RemoveAll" HorizontalAlignment="Left" Width="120" Height="30" Click="RemoveAll_Click">Remove All</Button>
                 <Button x:Name="About" HorizontalAlignment="Left" Width="120" Height="30" Click="Sort_Click">Sort</Button>
             </ui:SimpleStackPanel>
-            <ListView x:Name="TODOs" Margin="15" AllowDrop="True" Drop="TODOs_Drop"/>
+            <ListView MinWidth="600" x:Name="TODOs" Margin="15" AllowDrop="True" Drop="TODOs_Drop"/>
         </ui:SimpleStackPanel>
     </Grid>
 </Window>
