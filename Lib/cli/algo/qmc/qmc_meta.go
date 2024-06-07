@@ -10,7 +10,7 @@ import (
 
 	"unlock-music.dev/cli/algo/common"
 	"unlock-music.dev/cli/algo/qmc/client"
-	"unlock-music.dev/cli/internal/ffmpeg"
+	"unlock-music.dev/cli/internal/meta"
 )
 
 func (d *Decoder) GetAudioMeta(ctx context.Context) (common.AudioMeta, error) {
@@ -25,7 +25,7 @@ func (d *Decoder) GetAudioMeta(ctx context.Context) (common.AudioMeta, error) {
 		return d.meta, nil
 	}
 
-	embedMeta, err := ffmpeg.ProbeReader(ctx, d.probeBuf)
+	embedMeta, err := meta.ProbeReader(ctx, d.probeBuf)
 	if err != nil {
 		return nil, fmt.Errorf("qmc[GetAudioMeta] probe reader: %w", err)
 	}
@@ -96,7 +96,7 @@ func (d *Decoder) GetCoverImage(ctx context.Context) ([]byte, error) {
 	}
 
 	if d.embeddedCover {
-		img, err := ffmpeg.ExtractAlbumArt(ctx, d.probeBuf)
+		img, err := meta.ExtractAlbumArt(ctx, d.probeBuf)
 		if err != nil {
 			return nil, fmt.Errorf("qmc[GetCoverImage] extract album art: %w", err)
 		}

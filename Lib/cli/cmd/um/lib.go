@@ -1,15 +1,18 @@
 package main
+
 import "C"
 import (
+	"bytes"
+	"context"
+	"errors"
+	"io"
 	"os"
 	"path/filepath"
-	"bytes"
-	"io"
-	"context"
-	"time"
-	"errors"
 	"strings"
+	"time"
+
 	//"fmt"
+
 	"unlock-music.dev/cli/algo/common"
 	_ "unlock-music.dev/cli/algo/kgm"
 	_ "unlock-music.dev/cli/algo/kwm"
@@ -18,10 +21,11 @@ import (
 	_ "unlock-music.dev/cli/algo/tm"
 	_ "unlock-music.dev/cli/algo/xiami"
 	_ "unlock-music.dev/cli/algo/ximalaya"
-	"unlock-music.dev/cli/internal/ffmpeg"
+	"unlock-music.dev/cli/internal/meta"
 	"unlock-music.dev/cli/internal/sniff"
 	"unlock-music.dev/cli/internal/utils"
 )
+
 type processor struct {
 	outputDir string
 
@@ -31,6 +35,11 @@ type processor struct {
 	overwriteOutput bool
 }
 
+//export ForceInit
+func ForceInit() {
+	meta.Init()
+}
+
 //export DecFile
 func DecFile(inFile *C.char, outDir *C.char, SkipNoop C.int) C.int {
 	// 0:no error 1:no decoder -1:decode error -2:output error
@@ -38,20 +47,20 @@ func DecFile(inFile *C.char, outDir *C.char, SkipNoop C.int) C.int {
 	outputDir := C.GoString(outDir)
 	//fmt.Println("inputFile:",inputFile)
 	//fmt.Println("outputDir:",outputDir)
-	allDec := common.GetDecoder(inputFile, SkipNoop!=0)
+	allDec := common.GetDecoder(inputFile, SkipNoop != 0)
 	p := processor{
-		outputDir:     outputDir,
-		updateMetadata: true,
-		removeSource:  false,
+		outputDir:       outputDir,
+		updateMetadata:  true,
+		removeSource:    false,
 		overwriteOutput: false,
-		skipNoopDecoder: SkipNoop!=0,
+		skipNoopDecoder: SkipNoop != 0,
 	}
 	if len(allDec) == 0 {
 		return 1
 	}
 	//fmt.Println("allDecLen:",len(allDec))
 	file, err := os.Open(inputFile)
-	
+
 	if err != nil {
 		return -1
 	}
@@ -72,7 +81,7 @@ func DecFile(inFile *C.char, outDir *C.char, SkipNoop C.int) C.int {
 	if dec == nil {
 		return -1
 	}
-	params := &ffmpeg.UpdateMetadataParams{}
+	params := &meta.UpdateMetadataParams{}
 
 	header := bytes.NewBuffer(nil)
 	_, err = io.CopyN(header, dec, 64)
@@ -111,7 +120,7 @@ func DecFile(inFile *C.char, outDir *C.char, SkipNoop C.int) C.int {
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
 
-			cover, err := coverGetter.GetCoverImage(ctx) 
+			cover, err := coverGetter.GetCoverImage(ctx)
 			imgExt, ok := sniff.ImageExtension(cover)
 			if err == nil && ok {
 				params.AlbumArtExt = imgExt
@@ -143,7 +152,7 @@ func DecFile(inFile *C.char, outDir *C.char, SkipNoop C.int) C.int {
 	} else {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
-		if err := ffmpeg.UpdateMeta(ctx, outPath, params); err != nil {
+		if err := meta.UpdateMeta(ctx, outPath, params); err != nil {
 			return -1
 		}
 	}

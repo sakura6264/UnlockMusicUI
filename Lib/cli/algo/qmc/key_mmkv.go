@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/exp/slices"
 	"golang.org/x/text/unicode/norm"
-	"unlock-music.dev/mmkv"
+	"unlock-music.dev/cli/algo/mmkv"
 )
 
 var streamKeyVault mmkv.Vault
@@ -53,6 +53,9 @@ func readKeyFromMMKV(file string, logger *zap.Logger) ([]byte, error) {
 	partName = normalizeUnicode(partName)
 
 	buf, err := streamKeyVault.GetBytes(file)
+	if err != nil {
+		logger.Warn("mmkv GetBytes", zap.String("key", file), zap.Error(err))
+	}
 	if buf == nil {
 		filePaths := streamKeyVault.Keys()
 		fileNames := lo.Map(filePaths, func(filePath string, _ int) string {

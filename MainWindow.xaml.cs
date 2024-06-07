@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using Microsoft.Win32;
+using System.Threading;
 
 
 
@@ -30,6 +31,7 @@ namespace UnlockMusicUI
         public MainWindow()
         {
             InitializeComponent();
+
             this.TODOs.ItemsSource = TODOList;
             this.TODOs.Items.Refresh();
         }
@@ -59,7 +61,7 @@ namespace UnlockMusicUI
                         this.TODOList.Add(new ItemInList(i));
                     }
                 }
-                this.TODOs.ItemsSource = TODOList;
+                this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, TODOList);
                 this.TODOs.Items.Refresh();
             }
         }
@@ -99,7 +101,7 @@ namespace UnlockMusicUI
                         var lsts = this.TODOList.Cast<ItemInList>().Select(n => n.GetText());
                         var addlst = files.Where(n => !lsts.Contains(n)).Select(n => new ItemInList(n)).ToList();
                         this.TODOList.AddRange(addlst);
-                        this.TODOs.ItemsSource = this.TODOList;
+                        this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, this.TODOList);
                         this.TODOs.Items.Refresh();
                     }
                     else
@@ -118,7 +120,7 @@ namespace UnlockMusicUI
             {
                 this.TODOList.Remove(i);
             }
-            this.TODOs.ItemsSource = TODOList;
+            this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, TODOList);
             this.TODOs.Items.Refresh();
         }
 
@@ -159,7 +161,7 @@ namespace UnlockMusicUI
         private void Sort_Click(object sender, RoutedEventArgs e)
         {
             this.TODOList = this.TODOList.Cast<ItemInList>().OrderBy(n => n.GetText()).ToList();
-            this.TODOs.ItemsSource = TODOList;
+            this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, TODOList);
             this.TODOs.Items.Refresh();
         }
 
@@ -202,7 +204,7 @@ namespace UnlockMusicUI
                     }
                 }
             }
-            this.TODOs.ItemsSource = TODOList;
+            this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, TODOList);
             this.TODOs.Items.Refresh();
         }
 
@@ -213,14 +215,14 @@ namespace UnlockMusicUI
             {
                 this.TODOList.Remove(i);
             }
-            this.TODOs.ItemsSource = TODOList;
+            this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, TODOList);
             this.TODOs.Items.Refresh();
         }
 
         private void RemoveAll_Click(object sender, RoutedEventArgs e)
         {
             this.TODOList.Clear();
-            this.TODOs.ItemsSource = TODOList;
+            this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, TODOList);
             this.TODOs.Items.Refresh();
         }
         private void WorkerDoWork(object sender, DoWorkEventArgs e)
@@ -270,7 +272,7 @@ namespace UnlockMusicUI
                     result.Complete.SetState(true, "Unkown Error.");
                     break;
             }
-            this.TODOs.ItemsSource = TODOList;
+            this.TODOs.SetCurrentValue(ItemsControl.ItemsSourceProperty, TODOList);
             this.TODOs.Items.Refresh();
 
         }
@@ -280,5 +282,7 @@ namespace UnlockMusicUI
             _ = MessageBox.Show("Decode Completed. Total : " + result.Sum + " Pass : " + result.Pass + " Error : " + result.Error, "Complete",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+
+        
     }
 }

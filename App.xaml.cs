@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,5 +14,12 @@ namespace UnlockMusicUI
     /// </summary>
     public partial class App : Application
     {
+        MainWindow mainWindow = null;
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            Helper.ForceInit();
+            mainWindow = new MainWindow();
+            mainWindow.Show();
+        }
     }
 }
