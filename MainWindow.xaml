@@ -8,6 +8,8 @@
         mc:Ignorable="d"
         ResizeMode="CanMinimize" Icon="{StaticResource Ico}"
         xmlns:ui="http://schemas.modernwpf.com/2019"
+        AllowDrop="True"
+        Drop="TODOs_Drop"
         Title="UnlockMusicUI" Height="600" Width="900">
     <Grid>
         <ui:SimpleStackPanel Orientation="Horizontal" Margin="10">
@@ -20,7 +22,7 @@
                 <Button x:Name="RemoveAll" HorizontalAlignment="Left" Width="120" Height="30" Click="RemoveAll_Click">Remove All</Button>
                 <Button x:Name="About" HorizontalAlignment="Left" Width="120" Height="30" Click="Sort_Click">Sort</Button>
             </ui:SimpleStackPanel>
-            <ListView MinWidth="600" x:Name="TODOs" Margin="15" AllowDrop="True" Drop="TODOs_Drop"/>
+            <ListView x:Name="TODOs" Margin="15"/>
         </ui:SimpleStackPanel>
     </Grid>
 </Window>

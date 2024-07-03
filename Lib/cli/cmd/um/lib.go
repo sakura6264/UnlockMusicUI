@@ -36,8 +36,9 @@ type processor struct {
 }
 
 //export ForceInit
-func ForceInit() {
-	meta.Init()
+func ForceInit(exedir *C.char) {
+	exedir_go := C.GoString(exedir)
+	meta.ForceInit(exedir_go)
 }
 
 //export DecFile

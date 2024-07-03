@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SplashScreen Include="loading.png" />
+    <Resource Include="loading.png" />
   </ItemGroup>
 
 </Project>

@@ -18,7 +18,7 @@ func updateMetaFlac(_ context.Context, outPath string, m *UpdateMetadataParams) 
 	}
 
 	// generate comment block
-	comment := flacvorbis.MetaDataBlockVorbisComment{Vendor: "unlock-music.dev"}
+	comment := flacvorbis.MetaDataBlockVorbisComment{Vendor: "unknown"}
 
 	// add metadata
 	title := m.Meta.GetTitle()
